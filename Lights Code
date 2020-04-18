@@ -1,0 +1,54 @@
+import Tkinter as tk
+import RPi.GPIO as GPIO
+
+#setup window
+window = tk.Tk()
+window.title("Three LED's")
+
+#setup pins and variables
+blue = 15
+green = 13
+yellow = 11
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(blue, GPIO.OUT)
+GPIO.setup(green, GPIO.OUT)
+GPIO.setup(yellow, GPIO.OUT)
+
+radio = tk.IntVar()
+
+#method/procedure that is run when a radio button is pressed, it turns of all leds then turns
+#on the led that the selected radio button was
+def ledToggle():
+	GPIO.output(yellow, GPIO.LOW)
+	GPIO.output(green, GPIO.LOW)
+	GPIO.output(blue, GPIO.LOW)
+
+	if radio.get() == 1:
+		GPIO.output(blue, GPIO.HIGH)
+	elif radio.get() == 2:
+		GPIO.output(green, GPIO.HIGH)
+	elif radio.get() == 3:
+		GPIO.output(yellow, GPIO.HIGH)
+
+#method/procedure that exits the program, first setting all leds off and then cleaning up and quiting the window
+def exitProgram():
+	GPIO.output(yellow, GPIO.LOW)
+	GPIO.output(green, GPIO.LOW)
+	GPIO.output(blue, GPIO.LOW)
+	GPIO.cleanup()
+	window.quit()
+
+#the led radio buttons drawn onto the window with their appropriate background colour
+blueToggle = tk.Radiobutton(window, text="Blue", variable = radio, value = 1, command = ledToggle, bg = "blue")
+blueToggle.grid(row = 0, column = 0)		
+greenToggle = tk.Radiobutton(window, text="Green", variable = radio, value = 2, command = ledToggle, bg = "green")
+greenToggle.grid(row = 0, column = 1)
+yellowToggle = tk.Radiobutton(window, text="Yellow", variable = radio, value = 3, command = ledToggle, bg = "yellow")
+yellowToggle.grid(row = 0, column = 2)
+
+#exit button drawn to the window
+exitButton = tk.Button(window, text="Exit", command = exitProgram)
+exitButton.grid(row = 1, column = 1)
+
+tk.mainloop()
